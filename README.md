@@ -22,13 +22,25 @@ De-Order envisions a simple, secure, and accessible solution to drive the mass a
 
 ## Key Features  
 
-1. **For Store Managers**  
-   - **Credit Certification**: Stores receive zk-based credit ratings from a certification institution. Only those with scores of 100 or higher can be verified, ensuring trust and security.  
-   - **Store Management**: Easily manage menus, orders, and invoices through a mobile-friendly interface. Upload zk credit certification for store verification.  
+**1. Store Manager Features**
+- **Credit Certification:**
+Stores receive zk-based credit ratings from a certification institution, providing a transparent and verifiable measure of trustworthiness.
+Only stores with a credit score of 100 or higher can be verified, ensuring higher quality and security in the platform.
 
-2. **For Users**  
-   - **Credit Verification**: Check the trustworthiness of stores by reviewing their credit ratings before making transactions.  
-   - **Seamless Transactions**: Browse menus, place orders, and pay effortlessly using cryptocurrency or other payment methods.  
+- **Store Management:**
+Stores can upload their zk-certified credit rating when creating their profile.
+They can manage their menus, track orders, and verify invoices through a mobile-friendly interface.
+
+**2. User Features**
+- **Credit Verification**:
+Users can check the credit score of stores before placing orders, ensuring they are dealing with trusted vendors.
+
+- **Ordering and Payment:**
+Users can easily browse the menu, select items, and click "Pay."
+Invoice Creation: Upon requesting payment, the backend generates and provides an invoice through the Request Network.
+
+- **Payment:**
+Users complete their payment via cryptocurrency or other methods, including Request Network's Escrow Pay system, ensuring secure transactions and offering diverse payment options.
 
 ## How It Works 
 
