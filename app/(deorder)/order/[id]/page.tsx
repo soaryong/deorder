@@ -3,7 +3,7 @@ import pb from "@/api/pocketbase";
 import { Button } from "@/components/ui/button";
 import useStore from "@/hooks/useStore";
 import { useParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import {
   useAccount,
   useBalance,
@@ -29,9 +29,7 @@ import verificationKey from "@/zkp/verificationKey.json";
 import useOrder from "@/hooks/useOrder";
 import { Web3SignatureProvider } from "@requestnetwork/web3-signature";
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
 import { ellipsisAddress } from "@/utils/strings";
-import useRequests from "@/hooks/useRequests";
 import useRequest from "@/hooks/useRequest";
 export default function Home() {
   const router = useRouter();
@@ -41,7 +39,6 @@ export default function Home() {
   const { address, isConnected } = useAccount();
   const { data: order } = useOrder(id);
   const { data: store } = useStore(order?.store_id);
-  const [zkProof, setZkProof] = useState("");
   const { data: balance } = useBalance({
     chainId: sepolia.id,
     token: "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
@@ -64,18 +61,6 @@ export default function Home() {
       },
     },
   });
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files?.[0]) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const fileContent = reader.result as string;
-        setZkProof(fileContent);
-      };
-      reader.readAsText(file);
-    }
-  };
 
   const verifyProofClientSide = useCallback(
     async (verificationKey: any, proof: any) => {
@@ -186,7 +171,7 @@ export default function Home() {
           name: store?.name,
           time: Date.now().toString(),
           price: order?.price,
-          zkProof: JSON.parse(zkProof as string),
+          zkProof: JSON.parse(store?.zkProof ?? "{}"),
         },
         signer: {
           type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
@@ -231,18 +216,9 @@ export default function Home() {
             )}
 
             {address === store?.owner && order?.state !== "request" && (
-              <>
-                {!zkProof && (
-                  <Input
-                    type="file"
-                    onChange={handleFileChange}
-                    accept=".json"
-                  />
-                )}
-                <Button className="mt-3" onClick={request}>
-                  Request (Available: ${balance?.formatted ?? 0})
-                </Button>
-              </>
+              <Button className="mt-3" onClick={request}>
+                Request
+              </Button>
             )}
           </div>
           <div className="space-y-2">

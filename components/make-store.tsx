@@ -18,11 +18,11 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import React from "react";
 import pb from "@/api/pocketbase";
-import { useAccount } from "wagmi";
-
+import { useAccount, useWalletClient } from "wagmi";
 const formSchema = z.object({
   name: z.string().default("").optional(),
   description: z.string().default("").optional(),
+  zkProof: z.string().optional(), // Keep this as a string to store the file content
   menu: z.string().optional(),
   price: z.coerce.number().optional(),
   image: z.string().optional(),
@@ -66,12 +66,38 @@ export const MakeStore: React.FC = () => {
         requestId: "",
       };
 
+      // If zkProof is provided, parse the JSON from the uploaded file
+      if (data.zkProof) {
+        try {
+          const zkProof = JSON.parse(data.zkProof);
+          console.log(zkProof);
+        } catch (error) {
+          alert("Invalid JSON format");
+          setLoading(false);
+          return;
+        }
+      }
+
       const createdItem = await pb.collection("orderwrap").create(formData);
-      router.replace("/store/" + createdItem.id);
+      console.log(createdItem.id);
+      router.replace("/");
       router.refresh();
     } catch (error: any) {
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle file change event to parse the file
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files?.[0]) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const fileContent = reader.result as string;
+        form.setValue("zkProof", fileContent); // Set the file content as zkProof
+      };
+      reader.readAsText(file);
     }
   };
 
@@ -119,6 +145,24 @@ export const MakeStore: React.FC = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="zkProof"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Credential (Upload JSON file)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      disabled={loading}
+                      onChange={handleFileChange}
+                      accept=".json"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <div className="space-y-3">
             <h1 className="font-bold text-lg">Menu1</h1>
@@ -154,7 +198,7 @@ export const MakeStore: React.FC = () => {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
+                  <FormLabel>Price (USDT)</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="Price" {...field} />
                   </FormControl>
@@ -197,7 +241,7 @@ export const MakeStore: React.FC = () => {
               name="price2"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
+                  <FormLabel>Price (USDT)</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="Price" {...field} />
                   </FormControl>

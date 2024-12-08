@@ -10,4 +10,5 @@ export interface IStoreProps {
   image2: string;
   owner: string;
   requestId: string;
+  zkProof: string;
 }

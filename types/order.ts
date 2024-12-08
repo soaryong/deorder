@@ -5,7 +5,6 @@ export interface IOrderProps {
   customer: string;
   state: string;
   created: string;
-  zkProof: string;
   requestId: string;
   hash: string;
   menus: {
