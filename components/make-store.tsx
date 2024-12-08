@@ -18,17 +18,11 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import React from "react";
 import pb from "@/api/pocketbase";
-import { useAccount, useWalletClient } from "wagmi";
-import { Web3SignatureProvider } from "@requestnetwork/web3-signature";
-import {
-  RequestNetwork,
-  Types,
-  Utils,
-} from "@requestnetwork/request-client.js";
+import { useAccount } from "wagmi";
+
 const formSchema = z.object({
   name: z.string().default("").optional(),
   description: z.string().default("").optional(),
-  zkProof: z.string().optional(), // Keep this as a string to store the file content
   menu: z.string().optional(),
   price: z.coerce.number().optional(),
   image: z.string().optional(),
@@ -40,11 +34,9 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export const MakeStore: React.FC = () => {
-  const FEE_ADDRSS = "0x2FCCba2f198066c5Ea3e414dD50F78E25c3aF552";
   const { address } = useAccount();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { data: walletClient } = useWalletClient();
 
   const action = "Create";
 
@@ -74,95 +66,12 @@ export const MakeStore: React.FC = () => {
         requestId: "",
       };
 
-      // If zkProof is provided, parse the JSON from the uploaded file
-      if (data.zkProof) {
-        try {
-          const zkProof = JSON.parse(data.zkProof);
-          console.log(zkProof);
-        } catch (error) {
-          alert("Invalid JSON format");
-          setLoading(false);
-          return;
-        }
-      }
-
-      const web3SignatureProvider = new Web3SignatureProvider(walletClient);
-      const requestClient = new RequestNetwork({
-        nodeConnectionConfig: {
-          baseURL: "https://sepolia.gateway.request.network/",
-        },
-        signatureProvider: web3SignatureProvider,
-      });
-
-      const requestCreateParameters: Types.ICreateRequestParameters = {
-        requestInfo: {
-          currency: {
-            type: Types.RequestLogic.CURRENCY.ERC20,
-            value: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
-            network: "sepolia" as Types.RequestLogic.ICurrency["network"],
-          },
-          expectedAmount: data.price?.toString() || "0",
-          payee: {
-            type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
-            value: address || "",
-          },
-          payer: {
-            type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
-            value: address || "",
-          },
-          timestamp: Utils.getCurrentTimestampInSecond(),
-        },
-        paymentNetwork: {
-          id: Types.Extension.PAYMENT_NETWORK_ID.ERC20_FEE_PROXY_CONTRACT,
-          parameters: {
-            paymentNetworkName: "sepolia",
-            paymentAddress: address,
-            feeAddress: FEE_ADDRSS,
-            feeAmount: "0",
-          },
-        },
-        contentData: {
-          name: data.name,
-          description: data.description,
-          menu: data.menu,
-          price: data.price,
-          zkProof: JSON.parse(data.zkProof as string),
-        },
-        signer: {
-          type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
-          value: address as string,
-        },
-      };
-
-      const request = await requestClient.createRequest(
-        requestCreateParameters
-      );
-      await request.waitForConfirmation();
-
-      formData.requestId = request.requestId;
-      console.log(request);
-      console.log(formData);
-
       const createdItem = await pb.collection("orderwrap").create(formData);
-      console.log(createdItem.id);
       router.replace("/store/" + createdItem.id);
       router.refresh();
     } catch (error: any) {
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Handle file change event to parse the file
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files?.[0]) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const fileContent = reader.result as string;
-        form.setValue("zkProof", fileContent); // Set the file content as zkProof
-      };
-      reader.readAsText(file);
     }
   };
 
@@ -210,24 +119,6 @@ export const MakeStore: React.FC = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="zkProof"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Credential (Upload JSON file)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      disabled={loading}
-                      onChange={handleFileChange}
-                      accept=".json"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
           <div className="space-y-3">
             <h1 className="font-bold text-lg">Menu1</h1>
@@ -263,7 +154,7 @@ export const MakeStore: React.FC = () => {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price (USDT)</FormLabel>
+                  <FormLabel>Price ($)</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="Price" {...field} />
                   </FormControl>
@@ -306,7 +197,7 @@ export const MakeStore: React.FC = () => {
               name="price2"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price (USDT)</FormLabel>
+                  <FormLabel>Price ($)</FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder="Price" {...field} />
                   </FormControl>
