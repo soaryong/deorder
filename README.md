@@ -32,6 +32,8 @@ De-Order envisions a simple, secure, and accessible solution to drive the mass a
 
 ## How It Works 
 
+![image](https://github.com/user-attachments/assets/84399804-ad99-4ceb-ac2c-649d993272fc)
+
 1. **For Store Managers**  
    - Submit zk-certified credit ratings to verify store trustworthiness.  
    - Manage menus, orders, and payment invoices on a single platform.  
