@@ -1,7 +1,7 @@
 <h1 align="center">De-Order</h1>
 
 <p align="center">
-  <a href="https://deorder.vercel.app/" style="color: #a77dff">Demo Site</a> | <a href="https://www.miricanvas.com/v/140d4dc" style="color: #a77dff">Pitchdeck</a> | <a href="https://github.com/soaryong/deorder" style="color: #a77dff">Github</a>
+  <a href="https://deorder.vercel.app/" style="color: #a77dff">Demo Site</a> | <a href="https://www.miricanvas.com/v/140d4dc" style="color: #a77dff">Pitchdeck</a> | <a href="https://github.com/soaryong/deorder" style="color: #a77dff">Github</a> | <a href="https://youtu.be/KiOZqeUtxXA" style="color: #a77dff">Demo Video</a>
 </p>
 
 <p align="center">De-Order offers a simple, secure solution that drives <code>mass adoption of blockchain</code> in everyday transactions, integrating zk-based privacy, transparent payments, and user-friendly features for efficient orders and payments.</p>
