@@ -8,6 +8,8 @@
 
 ## Overview
 
+#### [ZK Contract](https://github.com/soaryong/deorder/tree/main/zkp) | 
+
 - De-Order is an innovative blockchain-based platform designed to revolutionize the P2P secondhand trading experience. It connects blockchain technology with everyday life, offering a simple, secure, and user-friendly solution optimized for mass adoption. By integrating zk-based credit verification and cryptocurrency payments, De-Order ensures a trustworthy, cost-efficient, and seamless trading environment for users and store managers alike.  
 
 ## Problems Solves
