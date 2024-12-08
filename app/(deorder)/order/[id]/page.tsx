@@ -154,7 +154,7 @@ export default function Home() {
           },
           payer: {
             type: Types.Identity.TYPE.ETHEREUM_ADDRESS,
-            value: address || "",
+            value: order?.customer || "",
           },
           timestamp: Utils.getCurrentTimestampInSecond(),
         },
